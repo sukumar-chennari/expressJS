@@ -11,4 +11,11 @@ const queryController=(req,res)=>{
     res.send(req.query.keyword)
 }
 
-module.exports = {mainController, userController, queryController}
+const userLogin= (req,res)=>{
+    res.send('login page')
+}
+const userSignUp= (req,res)=>{
+    res.send('signup page')
+}
+
+module.exports = {mainController, userController, queryController, userLogin, userSignUp}
