@@ -1,6 +1,6 @@
 const express=require('express')
 const {  mainController, userController, queryController } = require('./controllers')
-const PORT=8100
+const PORT=8200
 const app=express()
 app.get('/',mainController)
 app.get('/user/:username',userController)
