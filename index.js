@@ -1,24 +1,47 @@
-const express=require('express')
-const {  mainController } = require('./controllers')
-const router = require('./route')
-const PORT=8100
-const app=express()
-app.get('/',mainController)
-// app.get('/user/:username',userController)
-// app.get('/search',queryController)
+const {welcomController}=require('./controlleres');
+const express=require('express');
+const cors=require('cors');
+const app=express();
+const port=8200;
 
-app.use('/user',router)
+const corsOptions = {
+    origin: 'http://localhost:8200/', // Replace with your allowed origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
 
-app.post('/users',express.json(),(req,res)=>{
-    const {username,email  }=req.body
-    res.send(`user created ${username} ${email} successfully`)
-})
+app.use(cors(corsOptions)
+);
+
+app.use((req,res,next)=>{
+    console.log('Middleware executed');
+    console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+    next();
+    res.on('finish',()=>{
+        console.log(`Response Status: ${res.statusCode}`);
+    });
+});
+app.get('/',(req,res)=>{
+    console.log('Root route accessed');
+    res.send('Hello World!');
+});
 
 
-app.put('/users/:id',express.json(),(req,res)=>{
-    const { id } = req.params
-    const {username,email}=req.body
-    res.send(`user ${username} with ${id}  is updated`)
-})
+app.get('/error', (req, res) => {
+    throw new Error('Intentional Error for Testing');
 
-app.listen(PORT,()=>console.log(`server is running on ${PORT}`))
+});
+
+
+app.use((err, req, res, next) => {
+    console.error('Error encountered:', err.message);
+    res.status(500).send('Internal Server Error');
+});
+
+app.get('/welcome',welcomController);
+
+app.listen(port,()=>{   
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
