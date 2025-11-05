@@ -14,34 +14,21 @@ const corsOptions = {
 app.use(cors(corsOptions)
 );
 
-app.use((req,res,next)=>{
-    console.log('Middleware executed');
-    console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
-    next();
-    res.on('finish',()=>{
-        console.log(`Response Status: ${res.statusCode}`);
-    });
-});
+// app.use(express.static('public'));
+
+app.use('public', express.static('public'));
+
+// set to ejs 
+app.set('view engine','ejs');
 app.get('/',(req,res)=>{
-    console.log('Root route accessed');
-    res.send('Hello World!');
+    res.render('index',{ name: 'John Doe' });
 });
 
-
-app.get('/error', (req, res) => {
-    throw new Error('Intentional Error for Testing');
-
-});
-
-
-app.use((err, req, res, next) => {
-    console.error('Error encountered:', err.message);
-    res.status(500).send('Internal Server Error');
-});
-
-app.get('/welcome',welcomController);
 
 app.listen(port,()=>{   
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+
+
 

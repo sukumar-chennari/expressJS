@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>User Profile</h2>
+    <p>Name: <%= user.name %></p>
+    <p>Role: <%= user.role %></p>
+
+    <h3>Skills:</h3>
+    <ul>
+      <% user.skills.forEach(skill => { %>
+      <li><%= skill %></li>
+      <% }) %>
+    </ul>
+  </body>
+  <!-- conditionals -->
+  <body>
+    <% if (isLoggedIn) { %>
+    <p>Welcome back, <%= name %>!</p>
+    <% } else { %>
+    <p>Please log in to continue.</p>
+    <% } %>
+  </body>
+
+  <!-- <body>
+    <ul>
+      <% products.forEach(p => { %>
+      <li><%= p.title %> - $<%= p.price %></li>
+      <% }) %>
+    </ul>
+  </body> -->
+
+
+</html>
