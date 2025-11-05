@@ -1,6 +1,19 @@
 const {welcomController}=require('./controlleres');
 const express=require('express');
 const cors=require('cors');
+const { urlencoded } = require('body-parser');
+const multer = require('multer');
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: 'uploads/', // Specify the destination directory for uploaded files
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + '-' + file.fieldname); // Create a unique filename
+        }
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 } // 5 MB file size limit
+});
+
 const app=express();
 const port=8200;
 
@@ -14,32 +27,23 @@ const corsOptions = {
 app.use(cors(corsOptions)
 );
 
-app.use((req,res,next)=>{
-    console.log('Middleware executed');
-    console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
-    next();
-    res.on('finish',()=>{
-        console.log(`Response Status: ${res.statusCode}`);
-    });
-});
+app.use(upload.single('image'));
+
+app.use(urlencoded({ extended: true }));
+
+
+
 app.get('/',(req,res)=>{
     console.log('Root route accessed');
     res.send('Hello World!');
 });
 
+app.post('/formData',(req,res)=>{
+    console.log('Form Data route accessed',req.body);
+    console.log('Uploaded Files:', req.file);
+    res.send('Form Data received successfully!');
+})
 
-app.get('/error', (req, res) => {
-    throw new Error('Intentional Error for Testing');
-
-});
-
-
-app.use((err, req, res, next) => {
-    console.error('Error encountered:', err.message);
-    res.status(500).send('Internal Server Error');
-});
-
-app.get('/welcome',welcomController);
 
 app.listen(port,()=>{   
     console.log(`Server is running on http://localhost:${port}`);
